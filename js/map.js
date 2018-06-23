@@ -14,26 +14,37 @@ var titleList = [
   'Неуютное бунгало по колено в воде'
 ];
 
-var MIN_PRICE = 1000;
-var MAX_PRICE = 1000000;
-
 var typeList = {
-  palace: {
-    ru: 'Дворец'
-  },
   flat: {
-    ru: 'Квартира'
+    ru: 'Квартира',
+    minPrice: 1000
   },
   house: {
-    ru: 'Дом'
+    ru: 'Дом',
+    minPrice: 5000
   },
   bungalo: {
-    ru: 'Бунгало'
+    ru: 'Лачуга',
+    minPrice: 0
+  },
+  palace: {
+    ru: 'Дворец',
+    minPrice: 10000
   }
 };
 
+var MIN_PRICE = 1000;
+var MAX_PRICE = 1000000;
+
 var MIN_ROOMS = 1;
 var MAX_ROOMS = 5;
+
+var ROOMS_CAPACITY = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
+};
 
 var MIN_GUESTS = 0;
 var MAX_GUESTS = 3;
@@ -89,6 +100,14 @@ var offerTemplate = document.querySelector('template').content.querySelector('.p
 var fieldsetArray = document.querySelector('.ad-form').querySelectorAll('fieldset');
 var formElement = document.querySelector('.ad-form');
 var pinButton = document.querySelector('.map__pin--main');
+var apartmentTypeElement = document.querySelector('#type');
+var priceElement = document.querySelector('#price');
+var checkInElement = document.querySelector('#timein');
+var checkOutElement = document.querySelector('#timeout');
+var roomsElement = document.querySelector('#room_number');
+var capacityElement = document.querySelector('#capacity');
+var descriptionElement = document.querySelector('#description');
+var reset = document.querySelector('.form__reset');
 
 
 // рандомайзер в диапазоне
@@ -274,9 +293,41 @@ function enableFormElements() {
   });
 }
 
+function clearForm() {
+  var inputs = formElement.querySelectorAll('input');
+  [].forEach.call(inputs, function (item) {
+    if (item.type === 'checkbox') {
+      item.checked = false;
+    } else {
+      item.value = '';
+    }
+  });
+  descriptionElement.value = '';
+  apartmentTypeElement.value = 'flat';
+  checkInElement.value = '12:00';
+  checkOutElement.value = '12:00';
+  roomsElement.value = '1';
+  capacityElement.value = '1';
+}
+
+// сбрасываем метку
+function resetPins() {
+  var pins = document.querySelectorAll('.map__pin');
+  [].forEach.call(pins, function (item) {
+    if (!item.classList.contains('map__pin--main')) {
+      item.remove();
+    }
+  });
+}
+
 // прячем затемняшку
 function showMap() {
   mapPins.classList.remove('map--faded');
+}
+
+// показываем затемняшку
+function hideMap() {
+  mapPins.classList.add('map--faded');
 }
 
 // получаем координаты метки
@@ -297,8 +348,7 @@ function getAddress() {
 
 // передаем координаты метки в поле Адрес
 function setAddress() {
-  var address = getAddress();
-  document.querySelector('#address').value = address;
+  document.querySelector('#address').value = getAddress();
 }
 
 // функция для активации формы
@@ -318,3 +368,52 @@ if (document.querySelector('.ad-form--disabled')) {
 }
 
 pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
+
+var setMinPrice = function () {
+  Object.keys(typeList).forEach(function (type) {
+    if (apartmentTypeElement.value === type) {
+      priceElement.setAttribute('min', typeList[type].minPrice);
+      priceElement.setAttribute('placeholder', typeList[type].minPrice);
+    }
+  });
+};
+
+apartmentTypeElement.addEventListener('change', setMinPrice);
+
+function setTime(time1, time2) {
+  time1.value = time2.value;
+}
+
+var setTimeOut = function () {
+  setTime(checkOutElement, checkInElement);
+};
+
+var setTimeIn = function () {
+  setTime(checkInElement, checkOutElement);
+};
+
+checkInElement.addEventListener('change', setTimeOut);
+checkOutElement.addEventListener('change', setTimeIn);
+
+function roomsChangeHandler() {
+  if (capacityElement.options.length > 0) {
+    [].forEach.call(capacityElement.options, function (item) {
+      item.selected = (ROOMS_CAPACITY[roomsElement.value][0] === item.value);
+      item.disabled = (ROOMS_CAPACITY[roomsElement.value].indexOf(item.value) < 0);
+    });
+  }
+}
+
+roomsChangeHandler();
+
+roomsElement.addEventListener('change', roomsChangeHandler);
+
+function resetForm() {
+  disableFormElements();
+  hideMap();
+  resetPins();
+  clearForm();
+  setAddress();
+}
+
+reset.addEventListener('click', resetForm);
