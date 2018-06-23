@@ -17,12 +17,20 @@ var titleList = [
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
 
-var typeList = [
-  'palace',
-  'flat',
-  'house',
-  'bungalo'
-];
+var typeList = {
+  palace: {
+    ru: 'Дворец'
+  },
+  flat: {
+    ru: 'Квартира'
+  },
+  house: {
+    ru: 'Дом'
+  },
+  bungalo: {
+    ru: 'Бунгало'
+  }
+};
 
 var MIN_ROOMS = 1;
 var MAX_ROOMS = 5;
@@ -56,8 +64,15 @@ var MAX_LOCATION_X = 900;
 var MIN_LOCATION_Y = 150;
 var MAX_LOCATION_Y = 500;
 
+var PIN_SIZE = {
+  draggableRoundPin: 65,
+  draggableArrow: 22,
+  userPinWidth: 50,
+  userPinHeight: 70
+};
+
 var titlesCount = titleList.length;
-var typesCount = typeList.length;
+var typesCount = Object.keys(typeList).length;
 var ckeckTimesCount = checkTimeList.length;
 var featuresCount = featuresList.length;
 var photosCount = photosList.length;
@@ -69,6 +84,12 @@ var mapPins = document.querySelector('.map');
 var mapPinsListElement = mapPins.querySelector('.map__pins');
 var mapFiltersContainer = mapPins.querySelector('.map__filters-container');
 var offerTemplate = document.querySelector('template').content.querySelector('.popup');
+
+// элементы формы
+var fieldsetArray = document.querySelector('.ad-form').querySelectorAll('fieldset');
+var formElement = document.querySelector('.ad-form');
+var pinButton = document.querySelector('.map__pin--main');
+
 
 // рандомайзер в диапазоне
 function getRandomInt(min, max) {
@@ -107,15 +128,17 @@ function getRandomArray(array, n) {
 function generateBookingItems(count) {
   var randomAvatar = generateRandomIndex(count);
   var randomTitleIndex = generateRandomIndex(titlesCount);
-  var randomFeatures = getRandomArray(featuresList, getRandomInt(1, featuresCount));
-  var randomPhotos = getRandomArray(photosList, photosCount);
+  var randomTypes = Object.keys(typeList);
   var randomTitle = [];
 
   for (var i = 0; i < count; i++) {
-    var x = getRandomInt(MIN_LOCATION_X, MAX_LOCATION_X);
-    var y = getRandomInt(MIN_LOCATION_Y, MAX_LOCATION_Y);
     var j = randomTitleIndex[i];
     randomTitle[i] = titleList[j - 1];
+    var randomFeatures = getRandomArray(featuresList, getRandomInt(1, featuresCount));
+    var randomPhotos = getRandomArray(photosList, photosCount);
+    var x = getRandomInt(MIN_LOCATION_X, MAX_LOCATION_X);
+    var y = getRandomInt(MIN_LOCATION_Y, MAX_LOCATION_Y);
+
     bookingItems[i] = {
       'author': {
         'avatar': 'img/avatars/user0' + randomAvatar[i] + '.png'
@@ -124,7 +147,7 @@ function generateBookingItems(count) {
         'title': randomTitle[i],
         'address': x + ', ' + y,
         'price': getRandomInt(MIN_PRICE, MAX_PRICE),
-        'type': typeList[getRandomInt(0, typesCount - 1)],
+        'type': randomTypes[getRandomInt(0, typesCount - 1)],
         'rooms': getRandomInt(MIN_ROOMS, MAX_ROOMS),
         'guests': getRandomInt(MIN_GUESTS, MAX_GUESTS),
         'checkin': checkTimeList[getRandomInt(0, ckeckTimesCount - 1)],
@@ -144,16 +167,27 @@ function generateBookingItems(count) {
   }
 }
 
-// генериим метки на карте
+// генериим метки и их события на карте
 var generatePins = function (bookingItem) {
   var mapPinTemplate = document.querySelector('template').content;
   var mapPinElement = mapPinTemplate.querySelector('.map__pin').cloneNode(true);
 
-  mapPinElement.style.left = (bookingItem.location.x - 25) + 'px';
-  mapPinElement.style.top = (bookingItem.location.y - 70) + 'px';
+  mapPinElement.style.left = (bookingItem.location.x - Math.floor(PIN_SIZE.userPinWidth * 0.5)) + 'px';
+  mapPinElement.style.top = (bookingItem.location.y - PIN_SIZE.userPinHeight) + 'px';
 
-  mapPinElement.querySelector('img').setAttribute('src', bookingItem.author.avatar);
-  mapPinElement.querySelector('img').setAttribute('alt', bookingItem.offer.title);
+  mapPinElement.querySelector('img').src = bookingItem.author.avatar;
+  mapPinElement.querySelector('img').alt = bookingItem.offer.title;
+
+  mapPinElement.onclick = function () {
+    if (mapPins.querySelector('.popup')) {
+      closeBookingItem();
+    }
+    renderBookingItem(bookingItem);
+
+    if (document.querySelector('.popup__close')) {
+      document.querySelector('.popup__close').addEventListener('click', closeBookingItem);
+    }
+  };
 
   return mapPinElement;
 };
@@ -162,26 +196,11 @@ var generatePins = function (bookingItem) {
 function renderPins() {
   var fragment = document.createDocumentFragment();
 
-  for (var j = 0; j < bookingItems.length; j++) {
-    fragment.appendChild(generatePins(bookingItems[j]));
-  }
+  bookingItems.forEach(function (item) {
+    fragment.appendChild(generatePins(item));
+  });
+
   mapPinsListElement.appendChild(fragment);
-}
-
-// прячем затемняшку
-function showMap() {
-  mapPins.classList.remove('map--faded');
-}
-
-// рендерим фоточки
-function renderOfferPhotos(content) {
-  for (var j = 0; j < photosCount; j++) {
-    var offerPhoto = offerTemplate.querySelector('.popup__photos img').cloneNode();
-    offerPhoto.src = content.offer.photos[j];
-    offerTemplate.querySelector('.popup__photos').appendChild(offerPhoto);
-  }
-  offerTemplate.querySelectorAll('.popup__photos img')[0].remove();
-  return offerTemplate.querySelector('.popup__photos');
 }
 
 // генерим окошко с объялением
@@ -208,31 +227,23 @@ function generateBookingItem(content) {
   offerElement.querySelector('.popup__text--capacity').textContent = content.offer.rooms + ' комнаты для ' + content.offer.guests + ' гостей';
   offerElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + content.offer.checkin + ', выезд до ' + content.offer.checkout;
 
-  var featureElement = offerElement.querySelectorAll('.popup__features li');
-  featureElement.forEach(function (element) {
-    element.remove();
-  });
+  var featuresElement = offerElement.querySelector('.popup__features');
+  featuresElement.innerHTML = '';
 
   var tempFeatures = content.offer.features;
-
-  function renderFeatureElement(featureName, index) {
-    if (tempFeatures.indexOf(featureName) >= 0) {
-      offerElement.querySelectorAll('li')[index].setAttribute('class', 'feature feature--' + featureName);
-      var featureIndex = tempFeatures.indexOf(featureName);
-      tempFeatures[featureIndex] = '';
-    }
-  }
-
-  for (var i = 0; i < content.offer.features.length; i++) {
-    offerElement.querySelector('.popup__features').appendChild(document.createElement('li'));
-    if (!offerElement.querySelectorAll('li')[i].hasAttribute('class')) {
-      renderFeatureElement(tempFeatures[i], i);
-    }
-  }
+  tempFeatures.forEach(function (feature, i) {
+    featuresElement.appendChild(document.createElement('li'));
+    featuresElement.querySelectorAll('li')[i].classList.add('feature', 'feature--' + feature);
+  });
 
   offerElement.querySelector('.popup__description').textContent = content.offer.description;
-  offerElement.querySelector('.popup__photos').remove();
-  offerElement.appendChild(renderOfferPhotos(content));
+
+  content.offer.photos.forEach(function (photo) {
+    var offerPhoto = offerTemplate.querySelector('.popup__photo').cloneNode();
+    offerPhoto.src = photo;
+    offerElement.querySelector('.popup__photos').appendChild(offerPhoto);
+  });
+  offerElement.querySelectorAll('.popup__photo')[0].remove();
 
   return offerElement;
 }
@@ -242,8 +253,68 @@ function renderBookingItem(content) {
   mapPins.insertBefore(generateBookingItem(content), mapFiltersContainer);
 }
 
+// закрываем окошко с объявлением
+function closeBookingItem() {
+  var offerModal = mapPins.querySelector('.popup');
+  offerModal.remove();
+}
+
+// отключаем элементы формы
+function disableFormElements() {
+  fieldsetArray.forEach(function (fieldsetElement) {
+    fieldsetElement.disabled = true;
+  });
+}
+
+// включаем элементы формы
+function enableFormElements() {
+  formElement.classList.remove('ad-form--disabled');
+  fieldsetArray.forEach(function (fieldsetElement) {
+    fieldsetElement.disabled = false;
+  });
+}
+
+// прячем затемняшку
+function showMap() {
+  mapPins.classList.remove('map--faded');
+}
+
+// получаем координаты метки
+function getAddress() {
+  var addressX = 0;
+  var addressY = 0;
+
+  if (mapPins.classList.contains('.map--faded')) {
+    addressX = Math.floor(pinButton.offsetLeft + 0.5 * PIN_SIZE.draggableRoundPin);
+    addressY = Math.floor(pinButton.offsetTop + 0.5 * PIN_SIZE.draggableRoundPin);
+  } else {
+    addressX = Math.floor(pinButton.offsetLeft + 0.5 * PIN_SIZE.draggableRoundPin);
+    addressY = pinButton.offsetTop + PIN_SIZE.draggableArrow;
+  }
+
+  return addressX + ', ' + addressY;
+}
+
+// передаем координаты метки в поле Адрес
+function setAddress() {
+  var address = getAddress();
+  document.querySelector('#address').value = address;
+}
+
+// функция для активации формы
+var pinButtonMouseupHandler = function () {
+  enableFormElements();
+  showMap();
+  setAddress();
+  renderPins();
+};
+
 // вызываем функции по генерации данных и отрисовке всех необходимых элементов
 generateBookingItems(ITEMS_COUNT);
-showMap();
-renderPins();
-renderBookingItem(bookingItems[0]);
+setAddress();
+
+if (document.querySelector('.ad-form--disabled')) {
+  disableFormElements();
+}
+
+pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
