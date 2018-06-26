@@ -107,7 +107,7 @@ var checkOutElement = document.querySelector('#timeout');
 var roomsElement = document.querySelector('#room_number');
 var capacityElement = document.querySelector('#capacity');
 var descriptionElement = document.querySelector('#description');
-var reset = document.querySelector('.form__reset');
+var reset = document.querySelector('.ad-form__reset');
 
 
 // рандомайзер в диапазоне
@@ -270,16 +270,25 @@ function generateBookingItem(content) {
 // рендерим окошко с объявлением
 function renderBookingItem(content) {
   mapPins.insertBefore(generateBookingItem(content), mapFiltersContainer);
+  document.addEventListener('keydown', onPopupEscPress);
 }
 
 // закрываем окошко с объявлением
 function closeBookingItem() {
   var offerModal = mapPins.querySelector('.popup');
+  document.removeEventListener('keydown', onPopupEscPress);
   offerModal.remove();
 }
 
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === 27) {
+    closeBookingItem();
+  }
+};
+
 // отключаем элементы формы
 function disableFormElements() {
+  formElement.classList.add('ad-form--disabled');
   fieldsetArray.forEach(function (fieldsetElement) {
     fieldsetElement.disabled = true;
   });
@@ -335,7 +344,7 @@ function getAddress() {
   var addressX = 0;
   var addressY = 0;
 
-  if (mapPins.classList.contains('.map--faded')) {
+  if (mapPins.classList.contains('map--faded')) {
     addressX = Math.floor(pinButton.offsetLeft + 0.5 * PIN_SIZE.draggableRoundPin);
     addressY = Math.floor(pinButton.offsetTop + 0.5 * PIN_SIZE.draggableRoundPin);
   } else {
@@ -357,6 +366,7 @@ var pinButtonMouseupHandler = function () {
   showMap();
   setAddress();
   renderPins();
+  pinButton.removeEventListener('mouseup', pinButtonMouseupHandler);
 };
 
 // вызываем функции по генерации данных и отрисовке всех необходимых элементов
@@ -366,8 +376,9 @@ setAddress();
 if (document.querySelector('.ad-form--disabled')) {
   disableFormElements();
 }
-
-pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
+if (mapPins.classList.contains('map--faded')) {
+  pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
+}
 
 var setMinPrice = function () {
   Object.keys(typeList).forEach(function (type) {
@@ -414,6 +425,46 @@ function resetForm() {
   resetPins();
   clearForm();
   setAddress();
+  pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
 }
 
 reset.addEventListener('click', resetForm);
+
+pinButton.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    if (MIN_LOCATION_X < startCoords.x && startCoords.x < MAX_LOCATION_X && MIN_LOCATION_Y < startCoords.y && startCoords.y < MAX_LOCATION_Y) {
+      pinButton.style.top = (pinButton.offsetTop - shift.y) + 'px';
+      pinButton.style.left = (pinButton.offsetLeft - shift.x) + 'px';
+      setAddress();
+    }
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
