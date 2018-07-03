@@ -17,12 +17,12 @@
 
     mapPinElement.onclick = function () {
       if (window.util.mapPins.querySelector('.popup')) {
-        closeBookingItem();
+        window.closeBookingItem();
       }
       window.renderBookingItem(bookingItem);
 
       if (document.querySelector('.popup__close')) {
-        document.querySelector('.popup__close').addEventListener('click', closeBookingItem);
+        document.querySelector('.popup__close').addEventListener('click', window.closeBookingItem);
       }
     };
 
@@ -46,23 +46,23 @@
     window.util.showMap();
     window.util.setAddress();
     renderPins();
-    window.util.pinButton.removeEventListener('mouseup', pinButtonMouseupHandler);
+    window.util.pinButton.removeEventListener('mouseup', window.pinButtonMouseupHandler);
   };
 
   // сбрасываем метки
-  window.resetPins = function() {
+  window.resetPins = function () {
     var pins = document.querySelectorAll('.map__pin');
     [].forEach.call(pins, function (item) {
       if (!item.classList.contains('map__pin--main')) {
         item.remove();
       }
     });
-  }
+  };
 
   window.util.setAddress();
 
   if (window.util.mapPins.classList.contains('map--faded')) {
-    window.util.pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
+    window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
   }
 
 })();

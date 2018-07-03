@@ -1,5 +1,6 @@
-'use strict';// вместимость комнат
-(function(){
+'use strict';
+
+(function () {
   window.util = {
     // пустой массив для заполнения
     bookingItems: [],
@@ -51,17 +52,17 @@
     fieldsetArray: document.querySelector('.ad-form').querySelectorAll('fieldset'),
 
     // прячем затемняшку
-    showMap: function() {
+    showMap: function () {
       window.util.mapPins.classList.remove('map--faded');
     },
 
     // показываем затемняшку
-    hideMap: function() {
+    hideMap: function () {
       window.util.mapPins.classList.add('map--faded');
     },
 
     // получаем координаты метки
-    getAddress: function() {
+    getAddress: function () {
       var addressX = 0;
       var addressY = 0;
 
@@ -80,6 +81,6 @@
     setAddress: function () {
       document.querySelector('#address').value = window.util.getAddress();
     }
-  }
+  };
 
-})()
+})();

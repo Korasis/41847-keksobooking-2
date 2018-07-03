@@ -47,26 +47,26 @@
     offerElement.querySelectorAll('.popup__photo')[0].remove();
 
     return offerElement;
-  }
+  };
 
   // рендерим окошко с объявлением
-  window.renderBookingItem = function(content) {
+  window.renderBookingItem = function (content) {
     window.util.mapPins.insertBefore(generateBookingItem(content), mapFiltersContainer);
     document.addEventListener('keydown', onPopupEscPress);
-  }
+  };
 
   // закрываем окошко с объявлением
-  window.closeBookingItem = function() {
+  window.closeBookingItem = function () {
     var offerModal = window.util.mapPins.querySelector('.popup');
     document.removeEventListener('keydown', onPopupEscPress);
     offerModal.remove();
-  }
+  };
 
   // закрытие по esc
   var onPopupEscPress = function (evt) {
     if (evt.keyCode === 27) {
-      closeBookingItem();
+      window.closeBookingItem();
     }
   };
 
-})()
+})();

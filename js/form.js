@@ -1,6 +1,6 @@
 'use strict';
 
-(function(){
+(function  (){
   var apartmentTypeElement = document.querySelector('#type');
   var priceElement = document.querySelector('#price');
   var checkInElement = document.querySelector('#timein');
@@ -19,14 +19,14 @@
   }
 
   // включаем элементы формы
-  window.enableFormElements = function() {
+  window.enableFormElements = function () {
     window.util.formElement.classList.remove('ad-form--disabled');
     window.util.fieldsetArray.forEach(function (fieldsetElement) {
       fieldsetElement.disabled = false;
     });
   };
 
-  //очистка формы
+  // очистка формы
   function clearForm() {
     var inputs = window.util.formElement.querySelectorAll('input');
     [].forEach.call(inputs, function (item) {
@@ -93,9 +93,9 @@
     window.resetPins();
     clearForm();
     window.util.setAddress();
-    window.util.pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
+    window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
   }
 
   reset.addEventListener('click', resetForm);
 
-})()
+})();
