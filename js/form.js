@@ -1,6 +1,6 @@
 'use strict';
 
-(function  (){
+(function () {
   var apartmentTypeElement = document.querySelector('#type');
   var priceElement = document.querySelector('#price');
   var checkInElement = document.querySelector('#timein');

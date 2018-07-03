@@ -47,7 +47,7 @@
     offerElement.querySelectorAll('.popup__photo')[0].remove();
 
     return offerElement;
-  };
+  }
 
   // рендерим окошко с объявлением
   window.renderBookingItem = function (content) {
