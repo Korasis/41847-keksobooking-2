@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var mapFiltersContainer = window.util.mapPins.querySelector('.map__filters-container');
+  var offerTemplate = document.querySelector('template').content.querySelector('.popup');
 
   // генерим окошко с объялением
   function generateBookingItem(content) {
@@ -48,14 +50,13 @@
   }
 
   // рендерим окошко с объявлением
-  function renderBookingItem(content) {
+  window.renderBookingItem = function(content) {
     window.util.mapPins.insertBefore(generateBookingItem(content), mapFiltersContainer);
     document.addEventListener('keydown', onPopupEscPress);
   }
 
-
   // закрываем окошко с объявлением
-  function closeBookingItem() {
+  window.closeBookingItem = function() {
     var offerModal = window.util.mapPins.querySelector('.popup');
     document.removeEventListener('keydown', onPopupEscPress);
     offerModal.remove();

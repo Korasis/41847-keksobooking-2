@@ -44,8 +44,23 @@
         minPrice: 10000
       }
     },
+
     mapPins: document.querySelector('.map'),
     pinButton: document.querySelector('.map__pin--main'),
+    formElement: document.querySelector('.ad-form'),
+    fieldsetArray: document.querySelector('.ad-form').querySelectorAll('fieldset'),
+
+    // прячем затемняшку
+    showMap: function() {
+      window.util.mapPins.classList.remove('map--faded');
+    },
+
+    // показываем затемняшку
+    hideMap: function() {
+      window.util.mapPins.classList.add('map--faded');
+    },
+
+    // получаем координаты метки
     getAddress: function() {
       var addressX = 0;
       var addressY = 0;
@@ -59,7 +74,12 @@
       }
 
       return addressX + ', ' + addressY;
-    }
+    },
 
+    // передаем координаты метки в поле Адрес
+    setAddress: function () {
+      document.querySelector('#address').value = window.util.getAddress();
+    }
   }
+
 })()

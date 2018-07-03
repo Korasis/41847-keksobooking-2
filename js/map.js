@@ -1,11 +1,8 @@
 'use strict';
 
-(function(){
+(function () {
   // элементы для отрисовки
   var mapPinsListElement = window.util.mapPins.querySelector('.map__pins');
-  var mapFiltersContainer = window.util.mapPins.querySelector('.map__filters-container');
-  var offerTemplate = document.querySelector('template').content.querySelector('.popup');
-
 
   // генериим метки и их события на карте
   var generatePins = function (bookingItem) {
@@ -22,7 +19,7 @@
       if (window.util.mapPins.querySelector('.popup')) {
         closeBookingItem();
       }
-      renderBookingItem(bookingItem);
+      window.renderBookingItem(bookingItem);
 
       if (document.querySelector('.popup__close')) {
         document.querySelector('.popup__close').addEventListener('click', closeBookingItem);
@@ -43,11 +40,17 @@
     mapPinsListElement.appendChild(fragment);
   }
 
+  // функция для активации формы
+  window.pinButtonMouseupHandler = function () {
+    window.enableFormElements();
+    window.util.showMap();
+    window.util.setAddress();
+    renderPins();
+    window.util.pinButton.removeEventListener('mouseup', pinButtonMouseupHandler);
+  };
 
-
-
-  // сбрасываем метку
-  function resetPins() {
+  // сбрасываем метки
+  window.resetPins = function() {
     var pins = document.querySelectorAll('.map__pin');
     [].forEach.call(pins, function (item) {
       if (!item.classList.contains('map__pin--main')) {
@@ -56,23 +59,10 @@
     });
   }
 
-  // прячем затемняшку
-  function showMap() {
-    window.util.mapPins.classList.remove('map--faded');
+  window.util.setAddress();
+
+  if (window.util.mapPins.classList.contains('map--faded')) {
+    window.util.pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
   }
 
-  // показываем затемняшку
-  function hideMap() {
-    window.util.mapPins.classList.add('map--faded');
-  }
-
-  // получаем координаты метки
-
-  // передаем координаты метки в поле Адрес
-  function setAddress() {
-    document.querySelector('#address').value = window.util.getAddress();
-  }
-
-  setAddress();
-
-})()
+})();

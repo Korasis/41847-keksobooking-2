@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-
+  // перемещение пина по карте
   window.util.pinButton.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
@@ -29,7 +29,7 @@
         && startCoords.y < window.util.MAX_LOCATION_Y) {
         window.util.pinButton.style.top = (window.util.pinButton.offsetTop - shift.y) + 'px';
         window.util.pinButton.style.left = (window.util.pinButton.offsetLeft - shift.x) + 'px';
-        setAddress();
+        window.util.setAddress();
       }
     };
 

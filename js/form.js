@@ -1,8 +1,6 @@
 'use strict';
 
 (function(){
-  var fieldsetArray = document.querySelector('.ad-form').querySelectorAll('fieldset');
-  var formElement = document.querySelector('.ad-form');
   var apartmentTypeElement = document.querySelector('#type');
   var priceElement = document.querySelector('#price');
   var checkInElement = document.querySelector('#timein');
@@ -14,23 +12,23 @@
 
   // отключаем элементы формы
   function disableFormElements() {
-    formElement.classList.add('ad-form--disabled');
-    fieldsetArray.forEach(function (fieldsetElement) {
+    window.util.formElement.classList.add('ad-form--disabled');
+    window.util.fieldsetArray.forEach(function (fieldsetElement) {
       fieldsetElement.disabled = true;
     });
   }
 
   // включаем элементы формы
-  function enableFormElements() {
-    formElement.classList.remove('ad-form--disabled');
-    fieldsetArray.forEach(function (fieldsetElement) {
+  window.enableFormElements = function() {
+    window.util.formElement.classList.remove('ad-form--disabled');
+    window.util.fieldsetArray.forEach(function (fieldsetElement) {
       fieldsetElement.disabled = false;
     });
-  }
+  };
 
   //очистка формы
   function clearForm() {
-    var inputs = formElement.querySelectorAll('input');
+    var inputs = window.util.formElement.querySelectorAll('input');
     [].forEach.call(inputs, function (item) {
       if (item.type === 'checkbox') {
         item.checked = false;
@@ -44,23 +42,6 @@
     checkOutElement.value = '12:00';
     roomsElement.value = '1';
     capacityElement.value = '1';
-  }
-
-  // функция для активации формы
-  var pinButtonMouseupHandler = function () {
-    enableFormElements();
-    showMap();
-    setAddress();
-    window.renderPins();
-    window.util.pinButton.removeEventListener('mouseup', pinButtonMouseupHandler);
-  };
-
-  if (document.querySelector('.ad-form--disabled')) {
-    disableFormElements();
-  }
-
-  if (window.util.mapPins.classList.contains('map--faded')) {
-    window.util.pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
   }
 
   var setMinPrice = function () {
@@ -102,14 +83,19 @@
 
   roomsElement.addEventListener('change', roomsChangeHandler);
 
+  if (document.querySelector('.ad-form--disabled')) {
+    disableFormElements();
+  }
+
   function resetForm() {
     disableFormElements();
-    hideMap();
-    resetPins();
+    window.util.hideMap();
+    window.resetPins();
     clearForm();
-    setAddress();
+    window.util.setAddress();
     window.util.pinButton.addEventListener('mouseup', pinButtonMouseupHandler);
   }
 
   reset.addEventListener('click', resetForm);
+
 })()
