@@ -98,4 +98,13 @@
 
   reset.addEventListener('click', resetForm);
 
+  window.util.formElement.addEventListener('submit', function (evt) {
+    window.upload(new FormData(window.util.formElement), function (response) {
+      clearForm();
+      window.util.setAddress();
+      window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
+    });
+    evt.preventDefault();
+  });
+
 })();
