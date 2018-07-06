@@ -61,6 +61,16 @@
       window.util.mapPins.classList.add('map--faded');
     },
 
+    // сбрасываем метки
+    resetPins: function () {
+      var pins = document.querySelectorAll('.map__pin');
+      [].forEach.call(pins, function (item) {
+        if (!item.classList.contains('map__pin--main')) {
+          item.remove();
+        }
+      });
+    },
+
     // получаем координаты метки
     getAddress: function () {
       var addressX = 0;
@@ -82,5 +92,4 @@
       document.querySelector('#address').value = window.util.getAddress();
     }
   };
-
 })();

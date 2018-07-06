@@ -141,5 +141,4 @@
 
   // запускаем генерацию данных
   generateBookingItems(ITEMS_COUNT);
-
 })();

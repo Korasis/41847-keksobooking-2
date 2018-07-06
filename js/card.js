@@ -68,5 +68,4 @@
       window.closeBookingItem();
     }
   };
-
 })();

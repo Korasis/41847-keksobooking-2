@@ -30,33 +30,23 @@
   };
 
   // рендерим метки на карте
-  function renderPins() {
+  var renderPins = function (bookingItems) {
     var fragment = document.createDocumentFragment();
 
-    window.util.bookingItems.forEach(function (item) {
+    bookingItems.forEach(function (item) {
       fragment.appendChild(generatePins(item));
     });
 
     mapPinsListElement.appendChild(fragment);
-  }
+  };
 
   // функция для активации формы
   window.pinButtonMouseupHandler = function () {
     window.enableFormElements();
     window.util.showMap();
     window.util.setAddress();
-    renderPins();
+    window.backend.load(successHandler, errorHandler);
     window.util.pinButton.removeEventListener('mouseup', window.pinButtonMouseupHandler);
-  };
-
-  // сбрасываем метки
-  window.resetPins = function () {
-    var pins = document.querySelectorAll('.map__pin');
-    [].forEach.call(pins, function (item) {
-      if (!item.classList.contains('map__pin--main')) {
-        item.remove();
-      }
-    });
   };
 
   window.util.setAddress();
@@ -65,4 +55,19 @@
     window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
   }
 
+  var successHandler = function (bookingItems) {
+    renderPins(bookingItems);
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
 })();
