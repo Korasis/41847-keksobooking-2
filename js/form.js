@@ -9,6 +9,7 @@
   var capacityElement = document.querySelector('#capacity');
   var descriptionElement = document.querySelector('#description');
   var reset = document.querySelector('.ad-form__reset');
+  var successElement = document.querySelector('.success');
 
   // отключаем элементы формы
   function disableFormElements() {
@@ -90,7 +91,7 @@
   function resetForm() {
     disableFormElements();
     window.util.hideMap();
-    window.resetPins();
+    window.util.resetPins();
     clearForm();
     window.util.setAddress();
     window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
@@ -98,13 +99,29 @@
 
   reset.addEventListener('click', resetForm);
 
+  var showSuccessMessage = function () {
+    successElement.classList.remove('hidden');
+    document.addEventListener('keydown', onSuccesEscPress);
+    successElement.addEventListener('click', closeSuccesMessage);
+  };
+
+  // закрытие по esc
+  var onSuccesEscPress = function (evt) {
+    if (evt.keyCode === 27) {
+      successElement.classList.add('hidden');
+    }
+  };
+
+  var closeSuccesMessage = function () {
+    document.removeEventListener('keydown', onSuccesEscPress);
+    successElement.classList.add('hidden');
+  };
+
   window.util.formElement.addEventListener('submit', function (evt) {
-    window.upload(new FormData(window.util.formElement), function (response) {
-      clearForm();
-      window.util.setAddress();
-      window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
+    window.backend.upload(new FormData(window.util.formElement), function () {
+      resetForm();
+      showSuccessMessage();
     });
     evt.preventDefault();
   });
-
 })();

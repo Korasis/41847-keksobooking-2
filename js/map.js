@@ -30,34 +30,23 @@
   };
 
   // рендерим метки на карте
-  var renderPins = function () {
+  var renderPins = function (bookingItems) {
     var fragment = document.createDocumentFragment();
 
-    window.util.bookingItems.forEach(function (item) {
+    bookingItems.forEach(function (item) {
       fragment.appendChild(generatePins(item));
     });
 
     mapPinsListElement.appendChild(fragment);
-  }
+  };
 
   // функция для активации формы
   window.pinButtonMouseupHandler = function () {
     window.enableFormElements();
     window.util.showMap();
     window.util.setAddress();
-    // renderPins();
-    window.load(successHandler, errorHandler);
+    window.backend.load(successHandler, errorHandler);
     window.util.pinButton.removeEventListener('mouseup', window.pinButtonMouseupHandler);
-  };
-
-  // сбрасываем метки
-  var resetPins = function () {
-    var pins = document.querySelectorAll('.map__pin');
-    [].forEach.call(pins, function (item) {
-      if (!item.classList.contains('map__pin--main')) {
-        item.remove();
-      }
-    });
   };
 
   window.util.setAddress();
@@ -66,36 +55,8 @@
     window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
   }
 
-
-
-  var URL_GET_DATA = 'https://js.dump.academy/keksobooking/data';
-
-  window.load = function (onSuccess, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.open('GET', URL_GET_DATA);
-
-    xhr.addEventListener('load', function () {
-      onSuccess(xhr.response);
-    });
-
-    xhr.send();
-  };
-
-
-
-
   var successHandler = function (bookingItems) {
-    //renderPins();
-
-    var fragment = document.createDocumentFragment();
-
-    bookingItems.forEach(function (item) {
-      fragment.appendChild(generatePins(item));
-    });
-
-    mapPinsListElement.appendChild(fragment);
+    renderPins(bookingItems);
   };
 
   var errorHandler = function (errorMessage) {
@@ -109,7 +70,4 @@
     node.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', node);
   };
-
-
-
 })();
