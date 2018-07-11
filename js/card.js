@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var mapFiltersContainer = window.util.mapPins.querySelector('.map__filters-container');
   var offerTemplate = document.querySelector('template').content.querySelector('.popup');
 
   // генерим окошко с объялением
@@ -51,7 +50,7 @@
 
   // рендерим окошко с объявлением
   window.renderBookingItem = function (content) {
-    window.util.mapPins.insertBefore(generateBookingItem(content), mapFiltersContainer);
+    window.util.mapPins.insertBefore(generateBookingItem(content), window.util.mapFiltersContainer);
     document.addEventListener('keydown', onPopupEscPress);
   };
 
@@ -60,6 +59,7 @@
     var offerModal = window.util.mapPins.querySelector('.popup');
     document.removeEventListener('keydown', onPopupEscPress);
     offerModal.remove();
+    window.util.mapPins.querySelector('.map__pin--active').classList.remove('map__pin--active');
   };
 
   // закрытие по esc

@@ -20,6 +20,7 @@
         window.closeBookingItem();
       }
       window.renderBookingItem(bookingItem);
+      mapPinElement.classList.add('map__pin--active');
 
       if (document.querySelector('.popup__close')) {
         document.querySelector('.popup__close').addEventListener('click', window.closeBookingItem);
@@ -61,7 +62,7 @@
 
   var errorHandler = function (errorMessage) {
     var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white;';
     node.style.position = 'absolute';
     node.style.left = 0;
     node.style.right = 0;
@@ -70,4 +71,10 @@
     node.textContent = errorMessage;
     document.body.insertAdjacentElement('afterbegin', node);
   };
+
+  window.util.mapFilters.addEventListener('change', function () {
+    window.util.resetPins();
+    //window.closeBookingItem();
+    window.util.debounce(window.filters.updatePins(bookingItems), 500);
+  })
 })();
