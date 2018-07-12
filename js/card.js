@@ -1,6 +1,28 @@
 'use strict';
 
 (function () {
+  window.card = {
+    // рендерим окошко с объявлением
+    renderBookingItem: function (content) {
+      window.util.mapPinsElement.insertBefore(generateBookingItem(content), window.util.mapFiltersContainer);
+      document.addEventListener('keydown', popupEscPressHandler);
+    },
+
+    // закрываем окошко с объявлением
+    closeBookingItemHandler: function () {
+      var offerModalElement = window.util.mapPinsElement.querySelector('.popup');
+      if (offerModalElement) {
+        document.removeEventListener('keydown', popupEscPressHandler);
+        offerModalElement.remove();
+      }
+
+      if (window.util.mapPinsElement.querySelector('.map__pin--active')){
+        window.util.mapPinsElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
+      }
+    }
+  }
+
+
   var offerTemplate = document.querySelector('template').content.querySelector('.popup');
 
   // генерим окошко с объялением
@@ -48,26 +70,11 @@
     return offerElement;
   };
 
-  // рендерим окошко с объявлением
-  window.renderBookingItem = function (content) {
-    window.util.mapPinsElement.insertBefore(generateBookingItem(content), window.util.mapFiltersContainer);
-    document.addEventListener('keydown', PopupEscPressHandler);
-  };
-
-  // закрываем окошко с объявлением
-  window.closeBookingItemHandler = function () {
-    var offerModalElement = window.util.mapPinsElement.querySelector('.popup');
-    if (offerModalElement) {
-      document.removeEventListener('keydown', PopupEscPressHandler);
-      offerModalElement.remove();
-      window.util.mapPinsElement.querySelector('.map__pin--active').classList.remove('map__pin--active');
-    }
-  };
 
   // закрытие по esc
-  var PopupEscPressHandler = function (evt) {
+  var popupEscPressHandler = function (evt) {
     if (evt.keyCode === window.util.ESC_KEYCODE) {
-      window.closeBookingItemHandler();
+      window.card.closeBookingItemHandler();
     }
   };
 })();

@@ -14,14 +14,14 @@
     },
 
     // границы размерещения метки/адреса
-    MIN_LOCATION_X: 35,
-    MAX_LOCATION_X: 1125,
+    MIN_LOCATION_X: 0,
+    MAX_LOCATION_X: 1150,
     MIN_LOCATION_Y: 130,
-    MAX_LOCATION_Y: 530,
+    MAX_LOCATION_Y: 630,
 
     PIN_SIZE: {
       draggableRoundPin: 65,
-      draggableArrow: 22,
+      draggableArrow: 16,  // высота острого указателя (22пкс) за вычетом сдвига с стилях (6пкс)
       userPinWidth: 50,
       userPinHeight: 70
     },
@@ -85,7 +85,7 @@
         addressY = Math.floor(window.util.pinButton.offsetTop + 0.5 * window.util.PIN_SIZE.draggableRoundPin);
       } else {
         addressX = Math.floor(window.util.pinButton.offsetLeft + 0.5 * window.util.PIN_SIZE.draggableRoundPin);
-        addressY = window.util.pinButton.offsetTop + window.util.PIN_SIZE.draggableArrow;
+        addressY = window.util.pinButton.offsetTop + window.util.PIN_SIZE.draggableArrow + window.util.PIN_SIZE.draggableRoundPin;
       }
 
       return addressX + ', ' + addressY;
