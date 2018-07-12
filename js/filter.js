@@ -8,8 +8,8 @@
 
   var updatePins = function (bookingItems) {
     var filteresItems = bookingItems.slice();
-    var selectorFilters = window.util.mapFilters.querySelectorAll('select');
-    var featureFilters = window.util.mapFilters.querySelectorAll('input[type="checkbox"]:checked');
+    var selectorFilters = window.util.mapFiltersElement.querySelectorAll('select');
+    var featureFilters = window.util.mapFiltersElement.querySelectorAll('input[type="checkbox"]:checked');
 
     var filterRules = {
       'housing-type': 'type',

@@ -3,6 +3,7 @@
 (function () {
   var URL_POST_DATA = 'https://js.dump.academy/keksobooking';
   var URL_GET_DATA = 'https://js.dump.academy/keksobooking/data';
+  var SUCCESS_STATUS_CODE = 200;
 
   window.backend = {
     upload: function (data, onSuccess) {
@@ -21,7 +22,7 @@
       xhr.responseType = 'json';
 
       xhr.addEventListener('load', function () {
-        if (xhr.status === 200) {
+        if (xhr.status === SUCCESS_STATUS_CODE) {
           onSuccess(xhr.response);
           window.bookingItemsData = xhr.response;
         } else {
