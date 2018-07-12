@@ -14,10 +14,10 @@
     },
 
     // границы размерещения метки/адреса
-    MIN_LOCATION_X: 300,
-    MAX_LOCATION_X: 900,
-    MIN_LOCATION_Y: 150,
-    MAX_LOCATION_Y: 500,
+    MIN_LOCATION_X: 35,
+    MAX_LOCATION_X: 1125,
+    MIN_LOCATION_Y: 130,
+    MAX_LOCATION_Y: 530,
 
     PIN_SIZE: {
       draggableRoundPin: 65,
@@ -50,6 +50,8 @@
     pinButton: document.querySelector('.map__pin--main'),
     formElement: document.querySelector('.ad-form'),
     fieldsetArray: document.querySelector('.ad-form').querySelectorAll('fieldset'),
+    mapFiltersContainer: document.querySelector('.map__filters-container'),
+    mapFilters: document.querySelector('.map__filters'),
 
     // прячем затемняшку
     showMap: function () {
