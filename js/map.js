@@ -31,7 +31,7 @@
   };
 
   // рендерим метки на карте
-  var renderPins = function (bookingItems) {
+  window.renderPins = function (bookingItems) {
     var fragment = document.createDocumentFragment();
 
     bookingItems.forEach(function (item) {
@@ -74,7 +74,9 @@
 
   window.util.mapFilters.addEventListener('change', function () {
     window.util.resetPins();
-    //window.closeBookingItem();
-    window.util.debounce(window.filters.updatePins(bookingItems), 500);
-  })
+    // window.closeBookingItem();
+    // window.util.debounce(
+    window.filters.updatePins(window.bookingItemsData);
+    // , 500);
+  });
 })();

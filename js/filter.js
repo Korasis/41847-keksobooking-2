@@ -9,7 +9,7 @@
   var updatePins = function (bookingItems) {
     var filteresItems = bookingItems.slice();
     var selectorFilters = window.util.mapFilters.querySelectorAll('select');
-    var featureFilters = window.util.mapFilters.querySelectorAll('intut[type="checkbox"]:checked');
+    var featureFilters = window.util.mapFilters.querySelectorAll('input[type="checkbox"]:checked');
 
     var filterRules = {
       'housing-type': 'type',
@@ -24,7 +24,7 @@
     };
 
     var filterByPrice = function (priceFilter) {
-      return filteredOffers.filter(function (itemData) {
+      return filteresItems.filter(function (itemData) {
 
         var priceFilterValues = {
           'middle': itemData.offer.price >= PRICES.min && itemData.offer.price < PRICES.max,
@@ -37,7 +37,7 @@
     };
 
     var filterByFeatures = function (item) {
-      return filteredOffers.filter(function (itemData) {
+      return filteresItems.filter(function (itemData) {
         return itemData.offer.features.indexOf(item.value) >= 0;
       });
     };
@@ -47,29 +47,28 @@
       selectorFilters.forEach(function (item) {
         if (item.value !== 'any') {
           if (item.id !== 'housing-price') {
-            filteredOffers = filterByValue(item, FilterRules[item.id]);
+            filteresItems = filterByValue(item, filterRules[item.id]);
           } else {
-            filteredOffers = filterByPrice(item);
+            filteresItems = filterByPrice(item);
           }
         }
       });
     }
 
-    if (featuresFilters !== null) {
-      featuresFilters.forEach(function (item) {
-        filteredOffers = filterByFeatures(item);
+    if (featureFilters.length !== null) {
+      featureFilters.forEach(function (item) {
+        filteresItems = filterByFeatures(item);
       });
     }
 
-    if (filteredOffers.length) {
-      window.pin.render(filteredOffers);
+    if (filteresItems.length) {
+      window.renderPins(filteresItems);
     }
   };
 
   window.filters = {
-    updatePins: function (offers) {
-      updatePins(offers);
+    updatePins: function (bookingItems) {
+      updatePins(bookingItems);
     }
   };
-  }
-}();
+})();
