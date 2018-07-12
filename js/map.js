@@ -57,7 +57,7 @@
   }
 
   var successHandler = function (bookingItems) {
-    renderPins(bookingItems);
+    window.renderPins(bookingItems);
   };
 
   var errorHandler = function (errorMessage) {
