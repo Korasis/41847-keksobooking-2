@@ -2,7 +2,7 @@
 
 (function () {
   // элементы для отрисовки
-  var mapPinsListElement = window.util.mapPins.querySelector('.map__pins');
+  var mapPinsListElement = window.util.mapPinsElement.querySelector('.map__pins');
 
   // генериим метки и их события на карте
   var generatePins = function (bookingItem) {
@@ -16,14 +16,14 @@
     mapPinElement.querySelector('img').alt = bookingItem.offer.title;
 
     mapPinElement.onclick = function () {
-      if (window.util.mapPins.querySelector('.popup')) {
-        window.closeBookingItem();
+      if (window.util.mapPinsElement.querySelector('.popup')) {
+        window.closeBookingItemHandler();
       }
       window.renderBookingItem(bookingItem);
       mapPinElement.classList.add('map__pin--active');
 
       if (document.querySelector('.popup__close')) {
-        document.querySelector('.popup__close').addEventListener('click', window.closeBookingItem);
+        document.querySelector('.popup__close').addEventListener('click', window.closeBookingItemHandler);
       }
     };
 
@@ -52,7 +52,7 @@
 
   window.util.setAddress();
 
-  if (window.util.mapPins.classList.contains('map--faded')) {
+  if (window.util.mapPinsElement.classList.contains('map--faded')) {
     window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
   }
 
@@ -72,11 +72,9 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  window.util.mapFilters.addEventListener('change', function () {
+  window.util.mapFiltersElement.addEventListener('change', function () {
     window.util.resetPins();
-    // window.closeBookingItem();
-    // window.util.debounce(
-    window.filters.updatePins(window.bookingItemsData);
-    // , 500);
+    window.closeBookingItemHandler();
+    window.debounce(window.filters.updatePins(window.bookingItemsData), 500);
   });
 })();

@@ -8,16 +8,16 @@
   var roomsElement = document.querySelector('#room_number');
   var capacityElement = document.querySelector('#capacity');
   var descriptionElement = document.querySelector('#description');
-  var reset = document.querySelector('.ad-form__reset');
+  var resetElement = document.querySelector('.ad-form__reset');
   var successElement = document.querySelector('.success');
 
   // отключаем элементы формы
-  function disableFormElements() {
+  var disableFormElements = function () {
     window.util.formElement.classList.add('ad-form--disabled');
     window.util.fieldsetArray.forEach(function (fieldsetElement) {
       fieldsetElement.disabled = true;
     });
-  }
+  };
 
   // включаем элементы формы
   window.enableFormElements = function () {
@@ -28,9 +28,9 @@
   };
 
   // очистка формы
-  function clearForm() {
-    var inputs = window.util.formElement.querySelectorAll('input');
-    [].forEach.call(inputs, function (item) {
+  var clearForm = function () {
+    var inputElements = window.util.formElement.querySelectorAll('input');
+    [].forEach.call(inputElements, function (item) {
       if (item.type === 'checkbox') {
         item.checked = false;
       } else {
@@ -43,9 +43,9 @@
     checkOutElement.value = '12:00';
     roomsElement.value = '1';
     capacityElement.value = '1';
-  }
+  };
 
-  var setMinPrice = function () {
+  var MinPriceHandler = function () {
     Object.keys(window.util.typeList).forEach(function (type) {
       if (apartmentTypeElement.value === type) {
         priceElement.setAttribute('min', window.util.typeList[type].minPrice);
@@ -54,31 +54,31 @@
     });
   };
 
-  apartmentTypeElement.addEventListener('change', setMinPrice);
+  apartmentTypeElement.addEventListener('change', MinPriceHandler);
 
-  function setTime(time1, time2) {
+  var setTime = function (time1, time2) {
     time1.value = time2.value;
-  }
+  };
 
-  var setTimeOut = function () {
+  var TimeOutHandler = function () {
     setTime(checkOutElement, checkInElement);
   };
 
-  var setTimeIn = function () {
+  var TimeInHandler = function () {
     setTime(checkInElement, checkOutElement);
   };
 
-  checkInElement.addEventListener('change', setTimeOut);
-  checkOutElement.addEventListener('change', setTimeIn);
+  checkInElement.addEventListener('change', TimeOutHandler);
+  checkOutElement.addEventListener('change', TimeInHandler);
 
-  function roomsChangeHandler() {
+  var roomsChangeHandler = function () {
     if (capacityElement.options.length > 0) {
       [].forEach.call(capacityElement.options, function (item) {
         item.selected = (window.util.ROOMS_CAPACITY[roomsElement.value][0] === item.value);
         item.disabled = (window.util.ROOMS_CAPACITY[roomsElement.value].indexOf(item.value) < 0);
       });
     }
-  }
+  };
 
   roomsChangeHandler();
 
@@ -88,38 +88,38 @@
     disableFormElements();
   }
 
-  function resetForm() {
+  var resetFormHandler = function () {
     disableFormElements();
     window.util.hideMap();
     window.util.resetPins();
     clearForm();
     window.util.setAddress();
     window.util.pinButton.addEventListener('mouseup', window.pinButtonMouseupHandler);
-  }
+  };
 
-  reset.addEventListener('click', resetForm);
+  resetElement.addEventListener('click', resetFormHandler);
 
   var showSuccessMessage = function () {
     successElement.classList.remove('hidden');
-    document.addEventListener('keydown', onSuccesEscPress);
-    successElement.addEventListener('click', closeSuccesMessage);
+    document.addEventListener('keydown', SuccesEscPressHandler);
+    successElement.addEventListener('click', closeSuccesMessageHandler);
   };
 
   // закрытие по esc
-  var onSuccesEscPress = function (evt) {
-    if (evt.keyCode === 27) {
+  var SuccesEscPressHandler = function (evt) {
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
       successElement.classList.add('hidden');
     }
   };
 
-  var closeSuccesMessage = function () {
-    document.removeEventListener('keydown', onSuccesEscPress);
+  var closeSuccesMessageHandler = function () {
+    document.removeEventListener('keydown', SuccesEscPressHandler);
     successElement.classList.add('hidden');
   };
 
   window.util.formElement.addEventListener('submit', function (evt) {
     window.backend.upload(new FormData(window.util.formElement), function () {
-      resetForm();
+      resetFormHandler();
       showSuccessMessage();
     });
     evt.preventDefault();

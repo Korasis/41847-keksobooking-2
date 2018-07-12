@@ -45,22 +45,24 @@
         minPrice: 10000
       }
     },
+    // коды кнопок
+    ESC_KEYCODE: 27,
 
-    mapPins: document.querySelector('.map'),
+    mapPinsElement: document.querySelector('.map'),
     pinButton: document.querySelector('.map__pin--main'),
     formElement: document.querySelector('.ad-form'),
     fieldsetArray: document.querySelector('.ad-form').querySelectorAll('fieldset'),
     mapFiltersContainer: document.querySelector('.map__filters-container'),
-    mapFilters: document.querySelector('.map__filters'),
+    mapFiltersElement: document.querySelector('.map__filters'),
 
     // прячем затемняшку
     showMap: function () {
-      window.util.mapPins.classList.remove('map--faded');
+      window.util.mapPinsElement.classList.remove('map--faded');
     },
 
     // показываем затемняшку
     hideMap: function () {
-      window.util.mapPins.classList.add('map--faded');
+      window.util.mapPinsElement.classList.add('map--faded');
     },
 
     // сбрасываем метки
@@ -78,7 +80,7 @@
       var addressX = 0;
       var addressY = 0;
 
-      if (window.util.mapPins.classList.contains('map--faded')) {
+      if (window.util.mapPinsElement.classList.contains('map--faded')) {
         addressX = Math.floor(window.util.pinButton.offsetLeft + 0.5 * window.util.PIN_SIZE.draggableRoundPin);
         addressY = Math.floor(window.util.pinButton.offsetTop + 0.5 * window.util.PIN_SIZE.draggableRoundPin);
       } else {

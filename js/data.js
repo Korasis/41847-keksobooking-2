@@ -64,12 +64,12 @@
 
 
   // рандомайзер в диапазоне
-  function getRandomInt(min, max) {
+  var getRandomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   // рандомайзер индексов массивов - для аватарки и заголовка
-  function generateRandomIndex(count) {
+  var generateRandomIndex = function (count) {
     var j = 0;
     var tempArr = [];
     while (j < count) {
@@ -83,7 +83,7 @@
   }
 
   // рандомайзер массивов - для фич и фотографий
-  function getRandomArray(array, n) {
+  var getRandomArray = function (array, n) {
     var j = 0;
     var randomArray = [];
     while (j < n) {
@@ -97,7 +97,7 @@
   }
 
   // заполняем сгенерированными данными массив объявлений
-  function generateBookingItems(count) {
+  var generateBookingItems = function (count) {
     var randomAvatar = generateRandomIndex(count);
     var randomTitleIndex = generateRandomIndex(titlesCount);
     var randomTypes = Object.keys(window.util.typeList);
