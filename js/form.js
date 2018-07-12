@@ -45,7 +45,7 @@
     capacityElement.value = '1';
   };
 
-  var MinPriceHandler = function () {
+  var minPriceHandler = function () {
     Object.keys(window.util.typeList).forEach(function (type) {
       if (apartmentTypeElement.value === type) {
         priceElement.setAttribute('min', window.util.typeList[type].minPrice);
@@ -54,22 +54,22 @@
     });
   };
 
-  apartmentTypeElement.addEventListener('change', MinPriceHandler);
+  apartmentTypeElement.addEventListener('change', minPriceHandler);
 
   var setTime = function (time1, time2) {
     time1.value = time2.value;
   };
 
-  var TimeOutHandler = function () {
+  var timeOutHandler = function () {
     setTime(checkOutElement, checkInElement);
   };
 
-  var TimeInHandler = function () {
+  var timeInHandler = function () {
     setTime(checkInElement, checkOutElement);
   };
 
-  checkInElement.addEventListener('change', TimeOutHandler);
-  checkOutElement.addEventListener('change', TimeInHandler);
+  checkInElement.addEventListener('change', timeOutHandler);
+  checkOutElement.addEventListener('change', timeInHandler);
 
   var roomsChangeHandler = function () {
     if (capacityElement.options.length > 0) {
@@ -101,19 +101,19 @@
 
   var showSuccessMessage = function () {
     successElement.classList.remove('hidden');
-    document.addEventListener('keydown', SuccesEscPressHandler);
+    document.addEventListener('keydown', succesEscPressHandler);
     successElement.addEventListener('click', closeSuccesMessageHandler);
   };
 
   // закрытие по esc
-  var SuccesEscPressHandler = function (evt) {
+  var succesEscPressHandler = function (evt) {
     if (evt.keyCode === window.util.ESC_KEYCODE) {
       successElement.classList.add('hidden');
     }
   };
 
   var closeSuccesMessageHandler = function () {
-    document.removeEventListener('keydown', SuccesEscPressHandler);
+    document.removeEventListener('keydown', succesEscPressHandler);
     successElement.classList.add('hidden');
   };
 

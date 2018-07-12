@@ -1,45 +1,8 @@
 'use strict';
 
 (function () {
-  // элементы для отрисовки
-  var mapPinsListElement = window.util.mapPinsElement.querySelector('.map__pins');
+  var DEBOUNCE_TIMEOUT = 500;
 
-  // генериим метки и их события на карте
-  var generatePins = function (bookingItem) {
-    var mapPinTemplate = document.querySelector('template').content;
-    var mapPinElement = mapPinTemplate.querySelector('.map__pin').cloneNode(true);
-
-    mapPinElement.style.left = (bookingItem.location.x - Math.floor(window.util.PIN_SIZE.userPinWidth * 0.5)) + 'px';
-    mapPinElement.style.top = (bookingItem.location.y - window.util.PIN_SIZE.userPinHeight) + 'px';
-
-    mapPinElement.querySelector('img').src = bookingItem.author.avatar;
-    mapPinElement.querySelector('img').alt = bookingItem.offer.title;
-
-    mapPinElement.onclick = function () {
-      if (window.util.mapPinsElement.querySelector('.popup')) {
-        window.closeBookingItemHandler();
-      }
-      window.renderBookingItem(bookingItem);
-      mapPinElement.classList.add('map__pin--active');
-
-      if (document.querySelector('.popup__close')) {
-        document.querySelector('.popup__close').addEventListener('click', window.closeBookingItemHandler);
-      }
-    };
-
-    return mapPinElement;
-  };
-
-  // рендерим метки на карте
-  window.renderPins = function (bookingItems) {
-    var fragment = document.createDocumentFragment();
-
-    bookingItems.forEach(function (item) {
-      fragment.appendChild(generatePins(item));
-    });
-
-    mapPinsListElement.appendChild(fragment);
-  };
 
   // функция для активации формы
   window.pinButtonMouseupHandler = function () {
@@ -74,7 +37,7 @@
 
   window.util.mapFiltersElement.addEventListener('change', function () {
     window.util.resetPins();
-    window.closeBookingItemHandler();
-    window.debounce(window.filters.updatePins(window.bookingItemsData), 500);
+    window.card.closeBookingItemHandler();
+    window.debounce(window.filters.updatePins(window.bookingItemsData), DEBOUNCE_TIMEOUT);
   });
 })();
