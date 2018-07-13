@@ -21,7 +21,7 @@
 
     PIN_SIZE: {
       draggableRoundPin: 65,
-      draggableArrow: 16,  // высота острого указателя (22пкс) за вычетом сдвига с стилях (6пкс)
+      draggableArrow: 16, // высота острого указателя (22пкс) за вычетом сдвига с стилях (6пкс)
       userPinWidth: 50,
       userPinHeight: 70
     },

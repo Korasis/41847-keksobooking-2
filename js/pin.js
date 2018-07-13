@@ -45,11 +45,14 @@
   // перемещение пина по карте
   window.util.pinButton.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
+    //
+    // var startCoords = {
+    //   x: evt.clientX,
+    //   y: evt.clientY
+    // };
 
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
+    var shiftX = evt.clientX - window.util.pinButton.getBoundingClientRect().left;
+    var shiftY = evt.clientY - window.util.pinButton.getBoundingClientRect().top;
 
     var mouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
@@ -59,22 +62,26 @@
           x: window.util.MIN_LOCATION_X,
           y: window.util.MIN_LOCATION_Y
         };
-        if (e.pageX > window.util.MAX_LOCATION_X) {
-          newLocation.x = window.util.MAX_LOCATION_X;
-        } else if (e.pageX > window.util.MIN_LOCATION_X) {
-          newLocation.x = e.pageX;
+        if (e.clientX > window.util.MAX_LOCATION_X + window.util.mapPinsElement.offsetLeft) {
+          newLocation.x = window.util.MAX_LOCATION_X + window.util.mapPinsElement.offsetLeft;
+        } else if (e.clientX > window.util.MIN_LOCATION_X + window.util.mapPinsElement.offsetLeft) {
+          newLocation.x = e.clientX;
+        } else if (e.clientX <= window.util.MIN_LOCATION_X + window.util.mapPinsElement.offsetLeft) {
+          newLocation.x = window.util.MIN_LOCATION_X + window.util.mapPinsElement.offsetLeft;
         }
-        if (e.pageY > window.util.MAX_LOCATION_Y) {
-          newLocation.y = window.util.MAX_LOCATION_Y;
-        } else if (e.pageY > window.util.MIN_LOCATION_Y) {
-          newLocation.y = e.pageY;
+        if (e.clientY > window.util.MAX_LOCATION_Y + window.util.mapPinsElement.offsetTop) {
+          newLocation.y = window.util.MAX_LOCATION_Y + window.util.mapPinsElement.offsetTop;
+        } else if (e.clientY > window.util.MIN_LOCATION_Y + window.util.mapPinsElement.offsetTop) {
+          newLocation.y = e.clientY;
+        } else if (e.clientY <= window.util.MIN_LOCATION_Y + window.util.mapPinsElement.offsetTop) {
+          newLocation.y = window.util.MIN_LOCATION_Y + window.util.mapPinsElement.offsetTop;
         }
         relocate(newLocation);
       }
 
       function relocate(newLocation) {
-        window.util.pinButton.style.left = newLocation.x + 'px';
-        window.util.pinButton.style.top = newLocation.y + 'px';
+        window.util.pinButton.style.left = newLocation.x - shiftX - window.util.mapPinsElement.offsetLeft + 'px';
+        window.util.pinButton.style.top = newLocation.y - shiftY - window.util.mapPinsElement.offsetTop + 'px';
         window.util.setAddress();
       }
 
